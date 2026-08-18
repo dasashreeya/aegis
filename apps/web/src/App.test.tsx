@@ -14,6 +14,7 @@ const decision: Decision = {
   policy_id: "CMS-SNF-100",
   rationale: "The governing eligibility constraints are satisfied, but the source decision was denied.",
   unsat_core: ["medical_necessity", "original_denied"],
+  relaxations: [],
   findings: [
     {
       rule_id: "medical_necessity",

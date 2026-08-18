@@ -30,6 +30,8 @@ class RuleFinding(BaseModel):
     title: str
     satisfied: bool
     explanation: str
+    citation: str | None = None
+    source_excerpt: str | None = None
 
 
 class AuditEvent(BaseModel):
@@ -38,6 +40,8 @@ class AuditEvent(BaseModel):
     agent: str
     message: str
     created_at: datetime = Field(default_factory=utc_now)
+    trace_id: str | None = None
+    span_id: str | None = None
     payload: dict[str, Any] = Field(default_factory=dict, exclude=True)
 
 
@@ -52,6 +56,8 @@ class DecisionRecord(BaseModel):
     facts: DecisionFacts = Field(exclude=True)
     rationale: str
     unsat_core: list[str] = Field(default_factory=list)
+    relaxations: list[str] = Field(default_factory=list)
+    policy_version: str | None = None
     findings: list[RuleFinding] = Field(default_factory=list)
     events: list[AuditEvent] = Field(default_factory=list)
     created_at: datetime = Field(default_factory=utc_now)
