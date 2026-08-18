@@ -8,10 +8,10 @@ deployment. Roughly 25–30% of what `README.md` claims.
 
 ---
 
-## Step 0 — The contract commit (blocking, do first)
+## Step 0 — The contract commit ✅ done in `58f8454`
 
-Three files are touched by everything. If both people start before these are frozen, every pull
-request conflicts.
+Three files were touched by everything. If both people had started before these were frozen, every
+pull request would have conflicted. This is already on `main` — **branch from `58f8454` or later.**
 
 | Change | Why |
 | --- | --- |
@@ -20,9 +20,10 @@ request conflicts.
 | Mirror into `apps/web/src/types.ts` | Frontend never blocks on a backend merge. |
 | Split `apps/web/src/App.tsx` | 310 lines holding all five views becomes `views/DecisionsView`, `views/PoliciesView`, `views/AgentsView`, `views/TracesView` + shared `components/StatusBadge`. `App.tsx` keeps only shell, nav, and fetching. |
 | Per-view stylesheets | `styles.css` becomes base-only; each view imports its own CSS so nobody appends to a shared file. |
+| Add `.github/workflows/ci.yml` | ruff, pytest, eslint, tsc, vitest and the production build on every PR. Landed here rather than in the ops sprint so both tracks are checked from their first commit. |
 
-~45 minutes, mechanical, no behavior change. **The 3 existing tests must pass unmodified** — that is
-the check it was done right.
+Mechanical, no behavior change. The 3 API tests pass unmodified; `App.test.tsx` gained only the new
+required `relaxations` field on its fixture. CI is green on GitHub.
 
 ---
 
@@ -36,10 +37,9 @@ boilerplate, and finish. After this, every later push is just a redeploy.
 
 | Task | Done when |
 | --- | --- |
-| `.github/workflows/ci.yml` | ruff + pytest + tsc + vitest run on every PR and pass. Repo has no CI today. |
 | Dockerfile verification | `docker build` succeeds and the container serves `/api/health` locally. |
 | Frontend build integration | `npm run build` output is served by FastAPI — `main.py:86` already mounts `apps/web/dist`, it has never been exercised. |
-| Artifact Registry push | Image lands in the `aegis` repo created by `infra/main.tf`. |
+| Artifact Registry push | Image lands in the `aegis` repo created by `infra/main.tf`. **Blocked on @GIND123's `terraform apply`** — that repo does not exist until then. |
 
 ### @GIND123 — cloud runtime
 
