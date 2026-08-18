@@ -1,0 +1,14 @@
+{
+  "name": "aegis",
+  "private": true,
+  "workspaces": ["apps/web"],
+  "scripts": {
+    "dev": "npm --workspace @aegis/web run dev",
+    "build": "npm --workspace @aegis/web run build",
+    "lint": "npm --workspace @aegis/web run lint",
+    "test": "npm --workspace @aegis/web run test"
+  },
+  "devDependencies": {
+    "jsdom": "^29.0.0"
+  }
+}
