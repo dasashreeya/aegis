@@ -6,6 +6,8 @@ export interface AuditEvent {
   agent: string;
   message: string;
   created_at: string;
+  trace_id?: string | null;
+  span_id?: string | null;
 }
 
 export interface RuleFinding {
@@ -13,6 +15,8 @@ export interface RuleFinding {
   title: string;
   satisfied: boolean;
   explanation: string;
+  citation?: string | null;
+  source_excerpt?: string | null;
 }
 
 export interface Decision {
@@ -25,6 +29,8 @@ export interface Decision {
   policy_id: string;
   rationale: string;
   unsat_core: string[];
+  relaxations: string[];
+  policy_version?: string | null;
   findings: RuleFinding[];
   events: AuditEvent[];
   created_at: string;

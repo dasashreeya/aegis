@@ -1,4 +1,5 @@
 from app.armor import InputShield
+from app.contracts import Solver
 from app.models import AuditEvent, DecisionInput, DecisionRecord
 from app.solver import EligibilitySolver
 from app.store import DecisionStore
@@ -12,7 +13,7 @@ class DecisionOrchestrator:
     def __init__(self, store: DecisionStore) -> None:
         self.store = store
         self.shield = InputShield()
-        self.solver = EligibilitySolver()
+        self.solver: Solver = EligibilitySolver()
 
     def run(self, decision: DecisionInput, replay_of: str | None = None) -> DecisionRecord:
         events: list[AuditEvent] = []
@@ -84,6 +85,8 @@ class DecisionOrchestrator:
             facts=decision.facts,
             rationale=rationale,
             unsat_core=solver_result.unsat_core,
+            relaxations=solver_result.relaxations,
+            policy_version=solver_result.policy_version,
             findings=solver_result.findings,
             events=events,
             replay_of=replay_of,
