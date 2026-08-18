@@ -1,16 +1,7 @@
-from dataclasses import dataclass
-
 from z3 import And, Bool, BoolVal, Not, Solver, unsat
 
+from app.contracts import SolverResult
 from app.models import DecisionInput, RuleFinding
-
-
-@dataclass(frozen=True)
-class SolverResult:
-    eligible: bool
-    conflicts_with_original: bool
-    unsat_core: list[str]
-    findings: list[RuleFinding]
 
 
 class EligibilitySolver:
