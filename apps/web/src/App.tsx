@@ -136,7 +136,7 @@ function App() {
         {error && <div className="error-banner" role="alert"><AlertTriangle size={17} />{error}</div>}
 
         {activeNav === "Policies" ? (
-          <PoliciesView />
+          <PoliciesView decisions={decisions} />
         ) : activeNav === "Agents" ? (
           <AgentsView />
         ) : activeNav === "Traces" ? (

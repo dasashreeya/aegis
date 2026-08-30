@@ -1,1 +1,22 @@
 /* Track A — styles for the policy registry. */
+
+.policy-entry { border-bottom: 1px solid #edf0f3; }
+.policy-entry:last-child { border-bottom: 0; }
+.policy-entry .registry-row { border-bottom: 0; }
+
+.mini-state--alert { color: #8c3b34 !important; background: #fdece9; }
+
+.clause-list { margin: 0; padding: 0 20px 16px 20px; list-style: none; display: grid; gap: 10px; }
+.clause-list > li { padding: 10px 12px; background: #f8f9fb; border: 1px solid #e7ebf0; border-radius: 6px; }
+.clause-head { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; color: #667286; }
+.clause-head > svg { color: #7c8798; }
+.clause-head code { color: #40516d; font: 10px "IBM Plex Mono", monospace; }
+.clause-head strong { color: #20283a; font-size: 12px; }
+.clause-tally { margin-left: auto; color: #176247; font-size: 10px; font-weight: 700; }
+.clause-tally--unmet { color: #a23932; }
+.clause-list blockquote { margin: 8px 0 0; padding-left: 10px; color: #5c6a80; border-left: 2px solid #cbd7e5; font-size: 10px; font-style: italic; line-height: 1.45; }
+
+@media (max-width: 900px) {
+  .clause-list { padding: 0 14px 14px; }
+  .clause-tally { margin-left: 0; }
+}
