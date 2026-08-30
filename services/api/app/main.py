@@ -91,5 +91,6 @@ if web_dist.exists():
 
     @app.get("/{path:path}", include_in_schema=False)
     def web_app(path: str) -> FileResponse:
-        candidate = web_dist / path
-        return FileResponse(candidate if candidate.is_file() else web_dist / "index.html")
+        candidate = (web_dist / path).resolve()
+        inside_bundle = candidate.is_file() and candidate.is_relative_to(web_dist.resolve())
+        return FileResponse(candidate if inside_bundle else web_dist / "index.html")
