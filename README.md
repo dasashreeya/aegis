@@ -31,6 +31,18 @@
 
 **Architecture diagram description:** A left-to-right flow — external decision source → Pub/Sub event bus → Model Armor input shield → ADK Orchestrator (SequentialAgent) branching to three labeled sub-agents (Rules-Ingestion→Z3, Re-adjudication→Gemini 3.5 Flash, Replay/Audit) → Memory Bank + Firestore state stores below → Agent Identity/Agent Gateway wrapping the data-access boundary → Agent Observability/OpenTelemetry emitting to Cloud Trace on the right → all boxes sitting inside a "Cloud Run / GEAP Agent Runtime" container, with Agent Registry as a catalog card on top.
 
+**Who is building what:** two people, split by LLM role rather than by layer, so neither of us owns infrastructure alone. File-level ownership map, git workflow and prerequisites in [`WORKPLAN.md`](WORKPLAN.md).
+
+| Step / track | Owner | Scope | Status |
+| --- | --- | --- | --- |
+| Step 0 — shared contract | joint | `models.py`, `contracts.py`, `types.ts`, per-view split of `App.tsx`, CI | Merged (`58f8454`) |
+| Step 1 — build pipeline | @dasashreeya | Dockerfile, frontend build served by FastAPI, Artifact Registry push | Docker and frontend done; registry push blocked on `terraform apply` |
+| Step 1 — cloud runtime | @GIND123 | `terraform apply`, Cloud Run deploy, Pub/Sub push subscription, OpenTelemetry to Cloud Trace | Not started |
+| Track A — Rules & Solver | @dasashreeya | Policy prose to Gemini extraction to Z3 to minimal unsat core to plain-English relaxation, with a clause citation per rule | Built, in review (#1) |
+| Track B — Fleet & Adjudication | @GIND123 | ADK `SequentialAgent`, Gemini re-adjudication, hosted Model Armor, Replay/fork event log | Not started |
+
+**One rule:** if a file is not yours, you do not edit it. A shared file that genuinely must change becomes its own small PR to `main`, announced in the group chat, and both branches rebase. The integration PR is joint work: wire Track A's extracted constraints into Track B's ADK agent, and rewrite this README to describe what actually exists.
+
 **14-day build plan:**
 - Days 1–2: Stand up the ADK multi-agent skeleton on Cloud Run; wire Gemini 3.5 Flash; ingest one real dataset (Synthea/FHIR + CMS criteria).
 - Days 3–5: Build Reconcile (LLM→Z3, unsat core, plain-English relaxation) on a narrow, hard-coded rule domain (this is the demo's intellectual centerpiece — make it bulletproof).
