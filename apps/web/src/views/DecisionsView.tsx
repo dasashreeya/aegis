@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { AlertTriangle, Check, ChevronRight, Filter, GitFork, RefreshCw, Search, ShieldCheck, X } from "lucide-react";
+import { AlertTriangle, Check, ChevronRight, Filter, GitFork, RefreshCw, Search, ShieldCheck, Wrench, X } from "lucide-react";
 import { StatusBadge } from "../components/StatusBadge";
 import { formatTime } from "../lib/format";
 import type { Decision } from "../types";
@@ -33,6 +33,7 @@ export function DecisionsView({ decisions, selectedId, onSelect, onReplay, loadi
   const selected = decisions.find((item) => item.id === selectedId) ?? visibleDecisions[0];
   const flaggedCount = decisions.filter((item) => item.status === "flagged").length;
   const protectedCount = decisions.filter((item) => item.status !== "pending").length;
+  const citationFor = new Map(selected?.findings.map((item) => [item.rule_id, item.citation]) ?? []);
 
   return (
     <>
@@ -88,7 +89,11 @@ export function DecisionsView({ decisions, selectedId, onSelect, onReplay, loadi
           {selected ? (
             <>
               <div className="inspector__header">
-                <div><p className="eyebrow">Audit result</p><h2>{selected.subject}</h2></div>
+                <div>
+                  <p className="eyebrow">Audit result</p>
+                  <h2>{selected.subject}</h2>
+                  {selected.policy_version && <p className="policy-version">Reconciled against <code>{selected.policy_version}</code></p>}
+                </div>
                 <StatusBadge status={selected.status} />
               </div>
               <div className={`verdict ${selected.status === "upheld" ? "verdict--upheld" : ""}`}>
@@ -102,7 +107,11 @@ export function DecisionsView({ decisions, selectedId, onSelect, onReplay, loadi
                   {selected.findings.map((finding) => (
                     <div className="finding" key={finding.rule_id}>
                       <span className={finding.satisfied ? "finding__pass" : "finding__fail"}>{finding.satisfied ? <Check size={14} /> : <X size={14} />}</span>
-                      <div><strong>{finding.title}</strong><p>{finding.explanation}</p></div>
+                      <div>
+                        <strong>{finding.title}{finding.citation && <em className="finding__cite">{finding.citation}</em>}</strong>
+                        <p>{finding.explanation}</p>
+                        {finding.source_excerpt && <blockquote className="finding__excerpt">{finding.source_excerpt}</blockquote>}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -112,8 +121,21 @@ export function DecisionsView({ decisions, selectedId, onSelect, onReplay, loadi
                 <div className="detail-section">
                   <div className="detail-title"><h3>Minimal conflict set</h3><span>Z3 verified</span></div>
                   <div className="constraint-list">
-                    {selected.unsat_core.map((rule) => <code key={rule}>{rule}</code>)}
+                    {selected.unsat_core.map((rule) => (
+                      <code key={rule}>{rule}{citationFor.get(rule) ? ` · ${citationFor.get(rule)}` : ""}</code>
+                    ))}
                   </div>
+                </div>
+              )}
+
+              {selected.relaxations.length > 0 && (
+                <div className="detail-section">
+                  <div className="detail-title"><h3>Suggested relaxations</h3><span>Smallest change that resolves the conflict</span></div>
+                  <ul className="relaxations">
+                    {selected.relaxations.map((item) => (
+                      <li key={item}><Wrench size={13} aria-hidden="true" /><span>{item}</span></li>
+                    ))}
+                  </ul>
                 </div>
               )}
 
