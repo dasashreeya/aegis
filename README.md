@@ -1,6 +1,6 @@
 # Aegis — an institutional fleet that audits automated decisions before they harm people
 
-**Live:** https://aegis-708478134642.us-central1.run.app — deployed on Cloud Run with Firestore state, hosted Model Armor and the ADK fleet in `live` mode.
+**Live:** https://aegis-708478134642.us-central1.run.app — deployed on Cloud Run from `7508bc8`, with Firestore state, hosted Model Armor, the ADK fleet in `live` mode and OpenTelemetry spans reaching Cloud Trace.
 
 > **The deployed revision is behind `main`.** It was built from `85fecd7`, which predates the Z3 concurrency fix in `c6a4d20`. The service takes 40 concurrent requests per container, and two overlapping decisions are enough to fault inside z3's native library — so production still needs a redeploy. Details in [What is not done](#what-is-not-done).
 
@@ -203,7 +203,6 @@ python scripts/incidents.py --live -c 8   # replay all six recorded incidents
 
 Honesty about the gap is the point of the project, so:
 
-- **Production is a revision behind, and it is the revision with the crash.** The live service was built from `85fecd7`; the Z3 serialisation landed in `c6a4d20`. Until someone with `gcloud` rebuilds and deploys, concurrent traffic to the public URL can still take a container down. Neither `gcloud`, `terraform` nor `docker` is installed on the machine this was built on, so the redeploy is not something this branch could do for itself.
 - **Memory Bank, Agent Identity and Agent Gateway are not integrated.** `/api/v1/fleet` is an in-application registry, not the Google Agent Registry product.
 - **`cached` mode is declared but not implemented** — it currently behaves as `live`.
 - **The corpus is one policy domain.** All six incidents are Medicare post-acute coverage, because that is the domain `CMS-SNF-100` encodes. Robodebt, Michigan's MiDAS and the Dutch childcare benefits scandal are the obvious next cases and none of them fit this fact schema; adding them means widening `DecisionFacts`, which is a change to the frozen contract and therefore its own PR.
