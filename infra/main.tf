@@ -176,9 +176,11 @@ resource "google_cloud_run_v2_service" "aegis" {
         name  = "AEGIS_GOOGLE_CLOUD_PROJECT"
         value = var.project_id
       }
+      # Vertex routing only. Gemini 3.x is served from the global endpoint;
+      # Model Armor keeps its own regional setting below.
       env {
         name  = "AEGIS_GOOGLE_CLOUD_LOCATION"
-        value = var.region
+        value = var.vertex_location
       }
       env {
         name  = "AEGIS_MODEL_ADJUDICATOR"

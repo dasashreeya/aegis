@@ -34,7 +34,7 @@ variable "mode" {
 variable "adjudicator_model" {
   description = "Gemini model backing the re-adjudication agent"
   type        = string
-  default     = "gemini-2.5-flash"
+  default     = "gemini-3.5-flash"
 }
 
 variable "enable_model_armor" {
@@ -47,4 +47,10 @@ variable "min_instances" {
   description = "Warm instances. Zero costs nothing and adds cold start to the demo."
   type        = number
   default     = 0
+}
+
+variable "vertex_location" {
+  description = "Vertex AI endpoint for the adjudicator. Gemini 3.x is served from global."
+  type        = string
+  default     = "global"
 }
