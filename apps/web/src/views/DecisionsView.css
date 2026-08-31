@@ -1,1 +1,11 @@
 /* Track A — styles for the decisions queue and inspector. */
+
+.policy-version { margin: 6px 0 0; color: #758398; font-size: 10px; }
+.policy-version code { color: #40516d; font: 10px "IBM Plex Mono", monospace; }
+
+.finding__cite { margin-left: 6px; padding: 1px 5px; color: #40516d; background: #eef2f7; border-radius: 3px; font: 9px "IBM Plex Mono", monospace; font-style: normal; vertical-align: 1px; }
+.finding__excerpt { margin: 6px 0 0; padding: 6px 8px; color: #5c6a80; background: #f7f9fb; border-left: 2px solid #cbd7e5; border-radius: 0 4px 4px 0; font-size: 10px; font-style: italic; line-height: 1.45; }
+
+.relaxations { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.relaxations li { display: grid; grid-template-columns: 16px 1fr; gap: 8px; align-items: start; color: #5c6a80; font-size: 10px; line-height: 1.45; }
+.relaxations li > svg { margin-top: 1px; color: #176b52; }
