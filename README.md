@@ -1,5 +1,7 @@
 # Aegis — an institutional fleet that audits automated decisions before they harm people
 
+**Live:** https://aegis-708478134642.us-central1.run.app — deployed on Cloud Run with Firestore state, hosted Model Armor and the ADK fleet in `live` mode.
+
 **One-sentence pitch:** Aegis is a Fortified Enterprise Fleet of governed AI agents that sits alongside any automated eligibility/claims/benefits engine, independently re-adjudicates each decision against the real governing rules, and blocks or flags decisions that a formal solver proves are contradictory or unsupported — with a hash-chained audit trail that can be replayed and forked.
 
 **Cold-open (demo second 0–20):** "In 2022, Cigna's PxDx system denied 300,000 medical claims in two months — 1.2 seconds of review per claim. UnitedHealth's nH Predict denied post-acute care for elderly patients and was reversed 90% of the time on appeal, because it counted on the fact that only 0.2% of patients appeal. Ninety-one-year-old Gene Lokken lost his coverage after 19 days. Here is what our system would have done." Then show Aegis intercepting a denial on real data.
