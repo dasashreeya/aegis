@@ -17,3 +17,6 @@ htmlcov/
 .claude/
 .github/copilot-instructions.md
 .DS_Store
+
+# Demo renders live in the repo dir for convenience; Devpost hosts the real one
+*.mp4
