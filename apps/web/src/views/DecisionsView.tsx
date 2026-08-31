@@ -6,6 +6,8 @@ import type { Decision } from "../types";
 import "./DecisionsView.css";
 
 interface Props {
+  agentCount: number;
+  degradedCount: number;
   decisions: Decision[];
   selectedId?: string;
   onSelect: (id: string) => void;
@@ -14,7 +16,7 @@ interface Props {
   working: boolean;
 }
 
-export function DecisionsView({ decisions, selectedId, onSelect, onReplay, loading, working }: Props) {
+export function DecisionsView({ agentCount, degradedCount, decisions, selectedId, onSelect, onReplay, loading, working }: Props) {
   const [query, setQuery] = useState("");
   const [flaggedOnly, setFlaggedOnly] = useState(false);
 
@@ -33,6 +35,8 @@ export function DecisionsView({ decisions, selectedId, onSelect, onReplay, loadi
   const selected = decisions.find((item) => item.id === selectedId) ?? visibleDecisions[0];
   const flaggedCount = decisions.filter((item) => item.status === "flagged").length;
   const protectedCount = decisions.filter((item) => item.status !== "pending").length;
+  const onlineCount = agentCount - degradedCount;
+  const fleetHealth = agentCount === 0 ? null : Math.round((onlineCount / agentCount) * 100);
   const citationFor = new Map(selected?.findings.map((item) => [item.rule_id, item.citation]) ?? []);
 
   return (
@@ -41,7 +45,17 @@ export function DecisionsView({ decisions, selectedId, onSelect, onReplay, loadi
         <div><span>Decisions audited</span><strong>{decisions.length.toLocaleString()}</strong><small>Current workspace</small></div>
         <div><span>Flagged conflicts</span><strong>{flaggedCount}</strong><small>Require human review</small></div>
         <div><span>Protected decisions</span><strong>{protectedCount}</strong><small>Model Armor screened</small></div>
-        <div><span>Fleet health</span><strong>100%</strong><small>All agents responding</small></div>
+        <div>
+          <span>Fleet health</span>
+          <strong>{fleetHealth === null ? "\u2014" : `${fleetHealth}%`}</strong>
+          <small>
+            {agentCount === 0
+              ? "Connecting to fleet"
+              : degradedCount === 0
+                ? "All agents responding"
+                : `${onlineCount} of ${agentCount} agents online`}
+          </small>
+        </div>
       </section>
 
       <section className="workspace">

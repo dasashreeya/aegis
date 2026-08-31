@@ -12,7 +12,7 @@ import {
   SlidersHorizontal,
   X,
 } from "lucide-react";
-import { api } from "./api";
+import { api, type FleetDescription } from "./api";
 import { AgentsView } from "./views/AgentsView";
 import { DecisionsView } from "./views/DecisionsView";
 import { PoliciesView } from "./views/PoliciesView";
@@ -49,6 +49,7 @@ function App() {
   const [working, setWorking] = useState(false);
   const [error, setError] = useState<string>();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [fleet, setFleet] = useState<FleetDescription>();
 
   useEffect(() => {
     api
@@ -60,6 +61,14 @@ function App() {
       .catch((reason: Error) => setError(reason.message))
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    api.describeFleet().then(setFleet).catch(() => undefined);
+  }, []);
+
+  const agents = Array.isArray(fleet?.agents) ? fleet.agents : [];
+  const agentCount = agents.length;
+  const degradedCount = agents.filter((agent) => agent.health !== "online").length;
 
   async function runDemo() {
     setWorking(true);
@@ -113,8 +122,15 @@ function App() {
           ))}
         </nav>
         <div className="sidebar__footer">
-          <span className="cloud-dot" />
-          <div><strong>Fleet online</strong><small>4 agents connected</small></div>
+          <span className={`cloud-dot ${degradedCount > 0 ? "cloud-dot--degraded" : ""}`} />
+          <div>
+            <strong>{degradedCount > 0 ? "Fleet degraded" : "Fleet online"}</strong>
+            <small>
+              {agentCount === 0
+                ? "Connecting to fleet"
+                : `${agentCount} agents${degradedCount > 0 ? ` · ${degradedCount} degraded` : " connected"}`}
+            </small>
+          </div>
         </div>
       </aside>
 
@@ -143,6 +159,8 @@ function App() {
           <TracesView decisions={decisions} />
         ) : (
           <DecisionsView
+            agentCount={agentCount}
+            degradedCount={degradedCount}
             decisions={decisions}
             selectedId={selectedId}
             onSelect={setSelectedId}

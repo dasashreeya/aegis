@@ -28,6 +28,7 @@ button:disabled { cursor: wait; opacity: .65; }
 .sidebar__footer strong { font-size: 12px; }
 .sidebar__footer small { color: #8290a6; font-size: 11px; margin-top: 2px; }
 .cloud-dot { width: 9px; height: 9px; border-radius: 50%; background: #36c28e; box-shadow: 0 0 0 4px rgba(54,194,142,.12); }
+.cloud-dot--degraded { background: #d9a417; box-shadow: 0 0 0 4px rgba(217,164,23,.14); }
 .sidebar__close { display: none !important; margin-left: auto; }
 
 main { min-width: 0; }
