@@ -16,3 +16,4 @@ htmlcov/
 .rocketride/
 .claude/
 .github/copilot-instructions.md
+.DS_Store
