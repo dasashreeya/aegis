@@ -1,0 +1,58 @@
+{
+  "id": "tetzloff-nh-predict",
+  "title": "nH Predict ended stroke rehabilitation after 20 days against the physician's recommendation",
+  "system": "nH Predict (NaviHealth)",
+  "operator": "UnitedHealth Group",
+  "period": "October 2022 - October 2023",
+  "policy_id": "CMS-SNF-100",
+  "reconstructed": false,
+  "summary": "Dale Tetzloff, 74, had a stroke in October 2022. His physician recommended long-term nursing home care. Coverage was cut off after 20 days. He is the second named plaintiff in the same class action as Gene Lokken, filed in the U.S. District Court for the District of Minnesota on 14 November 2023. A federal judge allowed key claims to proceed on 13 February 2025.",
+  "harm": "The family paid roughly $70,000 out of pocket while appealing. He died in October 2023 in an assisted living facility.",
+  "caveat": "As with Lokken, the number of further days recommended is not in the public record and is reconstructed here. The 20 days covered, the ages, the dates and the amount are from the filed complaint as reported.",
+  "governing_rules": [
+    {
+      "rule_id": "medical_necessity",
+      "citation": "42 U.S.C. 1395y(a)(1)(A)",
+      "requirement": "Reasonable and necessary for the treatment of illness or injury. The treating physician recommended continued nursing home care after a stroke."
+    },
+    {
+      "rule_id": "skilled_care_required",
+      "citation": "42 CFR 409.31(b)(1)",
+      "requirement": "The beneficiary requires skilled nursing or skilled rehabilitation services on a daily basis."
+    },
+    {
+      "rule_id": "benefit_days_available",
+      "citation": "42 CFR 409.61(b); 42 U.S.C. 1395d(a)(2)(A)",
+      "requirement": "Up to 100 days of post-hospital SNF care per benefit period. Twenty were used."
+    }
+  ],
+  "sources": [
+    {
+      "title": "UnitedHealth faces class action lawsuit over algorithmic care denials in Medicare Advantage plans",
+      "publisher": "STAT News",
+      "date": "2023-11-14",
+      "url": "https://www.statnews.com/2023/11/14/unitedhealth-class-action-lawsuit-algorithm-medicare-advantage/"
+    },
+    {
+      "title": "Estate of Gene B. Lokken, et al. v. UnitedHealth Group, Inc. - AI Risks in Medical Insurance Coverage Disputes",
+      "publisher": "Tressler LLP",
+      "date": "2025-02-13",
+      "url": "https://www.tresslerllp.com/thought-leadership/estate-of-gene-b-lokken-et-al-v-unitedhealth-group-inc-ai-risks-in-medical-insurance-coverage-disputes/"
+    }
+  ],
+  "decisions": [
+    {
+      "label": "Tetzloff - post-stroke care terminated at day 20",
+      "expected_status": "flagged",
+      "requested_service": "Continued skilled nursing facility care and rehabilitation following a stroke, as recommended by the treating physician",
+      "original_decision": "denied",
+      "facts": {
+        "medically_necessary": true,
+        "skilled_care_required": true,
+        "benefit_days_used": 20,
+        "requested_days": 30
+      },
+      "note": "Physician recommended long-term care; 80 of the 100 covered days remained."
+    }
+  ]
+}

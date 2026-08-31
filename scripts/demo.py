@@ -14,19 +14,16 @@ substitutes the corrected source decision and re-executes the rest.
 from __future__ import annotations
 
 import argparse
-import sys
-from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO_ROOT / "services" / "api"))
+import _bootstrap  # noqa: F401  puts services/api on the path; must precede app imports
 
-from app.agents.replay import ForkRequest  # noqa: E402
-from app.config import Settings, get_settings  # noqa: E402
-from app.dependencies import build_stores  # noqa: E402
-from app.models import DecisionInput  # noqa: E402
-from app.orchestrator import DecisionOrchestrator, UnsafeDecisionError  # noqa: E402
-from app.solver import EligibilitySolver  # noqa: E402
-from app.telemetry import telemetry  # noqa: E402
+from app.agents.replay import ForkRequest
+from app.config import Settings, get_settings
+from app.dependencies import build_stores
+from app.models import DecisionInput
+from app.orchestrator import DecisionOrchestrator, UnsafeDecisionError
+from app.solver import EligibilitySolver
+from app.telemetry import telemetry
 
 # The Gene Lokken shape: a medically necessary skilled-nursing stay, denied at
 # day 19 of a 100-day benefit period.

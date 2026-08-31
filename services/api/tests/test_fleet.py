@@ -7,6 +7,7 @@ skipped rather than mocked into a shape that would not match the real thing.
 
 from __future__ import annotations
 
+import asyncio
 import itertools
 
 import pytest
@@ -327,6 +328,48 @@ def test_local_and_adk_runtimes_produce_the_same_ledger() -> None:
     assert local_record.status == adk_record.status
     # Z3 does not promise a stable order for the core, only a stable membership.
     assert sorted(local_record.unsat_core) == sorted(adk_record.unsat_core)
+
+
+def _audit_concurrently(fleet: DecisionOrchestrator, count: int) -> list:
+    async def run_all() -> list:
+        return await asyncio.gather(*(fleet.arun(decision()) for _ in range(count)))
+
+    return asyncio.run(run_all())
+
+
+def test_concurrent_audits_do_not_corrupt_the_solver() -> None:
+    """Both runtimes hand steps to worker threads and z3 has one global context.
+
+    Before the solver lock this faulted inside the native library rather than
+    raising, which two overlapping HTTP requests were enough to trigger.
+    """
+    fleet = orchestrator(fleet_runtime="local")
+    records = _audit_concurrently(fleet, 16)
+
+    assert len({record.id for record in records}) == 16
+    assert all(record.status == "flagged" for record in records)
+    for record in records:
+        assert fleet.ledger.verify(record.id).intact
+        assert len(fleet.ledger.entries(record.id)) == len(STEP_KEYS)
+
+
+def test_concurrent_audits_keep_adk_sessions_apart() -> None:
+    """The ADK runtime carries the fleet session in a ContextVar.
+
+    If that leaked between concurrent invocations, one decision would seal
+    another decision's findings into its ledger.
+    """
+    if not ADK_AVAILABLE:
+        pytest.skip("google-adk is not installed")
+    fleet = orchestrator(fleet_runtime="adk")
+    records = _audit_concurrently(fleet, 8)
+
+    assert len({record.id for record in records}) == 8
+    for record in records:
+        entries = fleet.ledger.entries(record.id)
+        assert len(entries) == len(STEP_KEYS)
+        assert {entry.decision_id for entry in entries} == {record.id}
+        assert fleet.ledger.verify(record.id).intact
 
 
 def test_requesting_adk_without_it_installed_fails_loudly() -> None:

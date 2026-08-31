@@ -14,6 +14,7 @@ lets Replay resume from the point of denial rather than from the beginning.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from threading import Lock
 from typing import Any, Protocol
 
 from app.agents.adjudicator import Adjudication, Adjudicator
@@ -21,6 +22,15 @@ from app.armor import ArmorResult, Shield
 from app.contracts import Solver, SolverResult
 from app.models import DecisionInput
 from app.store import LedgerEntry
+
+# z3-solver's Python bindings share one global context, and that context is not
+# thread safe: concurrent calls fault inside the native library rather than
+# raising. Both fleet runtimes hand steps to worker threads, so two overlapping
+# requests are enough to reach it. Every call into the solver is serialised
+# here. Evaluation is sub-millisecond, so the contention costs nothing
+# measurable, and the alternative -- a Z3 context per thread -- would have to
+# live in the rules track's code rather than in the fleet.
+_SOLVER_LOCK = Lock()
 
 
 class UnsafeDecisionError(ValueError):
@@ -153,7 +163,9 @@ class RulesIngestionStep(_BaseStep):
         summary: dict[str, Any] = {"policy_id": policy_id}
         if callable(describe):
             # Optional extension point for the rules track; absent on the base solver.
-            summary.update(describe(policy_id) or {})
+            # Held under the solver lock because compiling a policy builds Z3 terms.
+            with _SOLVER_LOCK:
+                summary.update(describe(policy_id) or {})
         return StepOutput(
             message=f"Loaded governing constraints for {policy_id}.",
             payload=summary,
@@ -166,7 +178,8 @@ class ReconcileStep(_BaseStep):
     agent = "Reconcile"
 
     def run(self, session: FleetSession) -> StepOutput:
-        result = session.solver.evaluate(session.decision)
+        with _SOLVER_LOCK:
+            result = session.solver.evaluate(session.decision)
         session.solver_result = result
         message = (
             "Formal solver found a contradiction in the original decision."

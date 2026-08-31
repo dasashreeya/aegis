@@ -1,0 +1,68 @@
+{
+  "id": "cigna-pxdx-throughput",
+  "title": "Bulk denial without opening the file: 1.2 seconds per claim",
+  "system": "PxDx",
+  "operator": "Cigna",
+  "period": "2022 (two-month window reported)",
+  "policy_id": "CMS-SNF-100",
+  "reconstructed": true,
+  "summary": "ProPublica and The Capitol Forum reported on 25 March 2023 that over a two-month period Cigna doctors denied more than 300,000 requests for payment using the PxDx system, spending an average of 1.2 seconds on each case, according to internal documents. A former Cigna doctor described the process: 'We literally click and submit. It takes all of 10 seconds to do 50 at a time.' The claims were labelled not medically necessary without anyone opening the patient file. Cigna disputed the reporting.",
+  "harm": "Patients were billed for care their physicians had ordered, on a determination that no clinician had read.",
+  "caveat": "This reconstructs the mechanism, not the claims. PxDx targeted tests and procedures matched by code pair; Aegis's fact schema models skilled nursing eligibility, so the cases below are post-acute claims denied the PxDx way rather than the specific procedure codes PxDx used. What transfers exactly is the failure mode - a bulk determination of 'not medically necessary' made without reading the record - and the throughput comparison the runner measures.",
+  "governing_rules": [
+    {
+      "rule_id": "medical_necessity",
+      "citation": "42 U.S.C. 1395y(a)(1)(A)",
+      "requirement": "The statutory test is whether the service is reasonable and necessary for the diagnosis or treatment of illness or injury. A determination made without reading the record cannot have applied it."
+    },
+    {
+      "rule_id": "skilled_care_required",
+      "citation": "42 CFR 409.31(b)(1)",
+      "requirement": "Skilled nursing or skilled rehabilitation services required on a daily basis."
+    },
+    {
+      "rule_id": "benefit_days_available",
+      "citation": "42 CFR 409.61(b); 42 U.S.C. 1395d(a)(2)(A)",
+      "requirement": "Up to 100 days of post-hospital SNF care per benefit period."
+    }
+  ],
+  "sources": [
+    {
+      "title": "How Cigna Saves Millions by Having Its Doctors Reject Claims Without Reading Them",
+      "publisher": "ProPublica and The Capitol Forum (Patrick Rucker, Maya Miller, David Armstrong)",
+      "date": "2023-03-25",
+      "url": "https://www.propublica.org/article/cigna-pxdx-medical-health-insurance-rejection-claims"
+    },
+    {
+      "title": "Cigna accused of using an algorithm to automatically reject patient claims",
+      "publisher": "CBS News",
+      "date": "2023-07-25",
+      "url": "https://www.cbsnews.com/news/cigna-algorithm-patient-claims-lawsuit/"
+    },
+    {
+      "title": "Cigna hits back on claims review report from ProPublica",
+      "publisher": "Becker's Payer Issues",
+      "date": "2023-03-27",
+      "url": "https://www.beckerspayer.com/payer/cigna-hits-back-on-claims-review-report-from-propublica/"
+    }
+  ],
+  "cohort": {
+    "basis": "24 claims denied as not medically necessary without the record being opened, standing in for the 300,000 denied at 1.2 seconds each.",
+    "profiles": [
+      {
+        "count": 24,
+        "label": "Denied unread",
+        "expected_status": "flagged",
+        "requested_service": "Post-acute skilled nursing care ordered by the treating physician, denied as not medically necessary without review of the record",
+        "original_decision": "denied",
+        "facts": {
+          "medically_necessary": true,
+          "skilled_care_required": true,
+          "benefit_days_used": 8,
+          "requested_days": 21
+        },
+        "note": "Every one of these has a record that establishes necessity. Nobody looked."
+      }
+    ]
+  }
+}

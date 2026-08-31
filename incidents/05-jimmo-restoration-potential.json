@@ -1,0 +1,64 @@
+{
+  "id": "jimmo-restoration-potential",
+  "title": "Denied for not improving, when the regulation says improvement is not the test",
+  "system": "Utilization management, improvement-standard rule",
+  "operator": "Pattern litigated in Jimmo v. Sebelius",
+  "period": "Settled 24 January 2013; CMS re-issued guidance in 2017",
+  "policy_id": "CMS-SNF-100",
+  "reconstructed": true,
+  "summary": "Jimmo v. Sebelius was a nationwide class action for Medicare beneficiaries denied coverage on the ground that they were not improving or had no potential to improve. The settlement approved by the District of Vermont on 24 January 2013 confirmed there is no 'improvement standard': coverage of skilled nursing and therapy turns on the need for skilled care, not on the presence of restoration potential, and is available to maintain a condition or slow deterioration. The regulation says so directly - 42 CFR 409.32 states that the restoration potential of a patient is not the deciding factor in determining whether skilled services are needed.",
+  "harm": "Beneficiaries with stable chronic conditions lost skilled care they needed to avoid deteriorating, on a criterion that was never in the law.",
+  "caveat": "A pattern case, not a named claimant. The litigation and the regulation are real; this specific decision is constructed to isolate the failure mode - every eligibility requirement is met and the denial rests entirely on a criterion the rules do not contain.",
+  "governing_rules": [
+    {
+      "rule_id": "medical_necessity",
+      "citation": "42 U.S.C. 1395y(a)(1)(A)",
+      "requirement": "Reasonable and necessary for the treatment of illness or injury, including to maintain a condition or slow deterioration."
+    },
+    {
+      "rule_id": "skilled_care_required",
+      "citation": "42 CFR 409.31(b)(1); 42 CFR 409.32",
+      "requirement": "Skilled services are required on a daily basis. 'The restoration potential of a patient is not the deciding factor in determining whether skilled services are needed.'"
+    },
+    {
+      "rule_id": "benefit_days_available",
+      "citation": "42 CFR 409.61(b); 42 U.S.C. 1395d(a)(2)(A)",
+      "requirement": "Up to 100 days of post-hospital SNF care per benefit period. Twenty-four were used."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Jimmo v. Sebelius Settlement Agreement Fact Sheet",
+      "publisher": "Centers for Medicare & Medicaid Services",
+      "date": "2014-02-02",
+      "url": "https://www.cms.gov/medicare/medicare-fee-for-service-payment/snfpps/downloads/jimmo_fact_sheet2_022014_final.pdf"
+    },
+    {
+      "title": "Jimmo v. Sebelius Improvement Standard Case Summary",
+      "publisher": "Center for Medicare Advocacy",
+      "date": "2023-09-01",
+      "url": "https://medicareadvocacy.org/jimmo-v-sebelius-improvement-standard-case-summary/"
+    },
+    {
+      "title": "42 CFR 409.32 - Criteria for skilled services and the need for skilled services",
+      "publisher": "Legal Information Institute, Cornell Law School",
+      "date": "2024-01-01",
+      "url": "https://www.law.cornell.edu/cfr/text/42/409.32"
+    }
+  ],
+  "decisions": [
+    {
+      "label": "Maintenance therapy denied for lack of improvement potential",
+      "expected_status": "flagged",
+      "requested_service": "Skilled maintenance therapy to prevent deterioration, denied on the ground that the patient is not expected to improve further",
+      "original_decision": "denied",
+      "facts": {
+        "medically_necessary": true,
+        "skilled_care_required": true,
+        "benefit_days_used": 24,
+        "requested_days": 21
+      },
+      "note": "Every constraint in force is satisfied. The stated reason for denial is not one of them."
+    }
+  ]
+}

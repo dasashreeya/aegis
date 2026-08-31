@@ -1,0 +1,115 @@
+{
+  "id": "psi-refusal-of-recovery",
+  "title": "A post-acute cohort at the 22.7% denial rate the Senate found for 2022",
+  "system": "Medicare Advantage prior authorization",
+  "operator": "UnitedHealthcare (rate as reported by the Senate PSI)",
+  "period": "2020 - 2022",
+  "policy_id": "CMS-SNF-100",
+  "reconstructed": true,
+  "summary": "The Senate Permanent Subcommittee on Investigations reported on 17 October 2024 that UnitedHealthcare's denial rate for post-acute care prior authorization rose from 10.9% in 2020 to 16.3% in 2021 to 22.7% in 2022, while its overall denial rate stayed far lower. The subcommittee, working from more than 280,000 pages of company documents, concluded the insurers were targeting post-acute care specifically. This file reconstructs a 22-case post-acute population at that 2022 rate.",
+  "harm": "The report frames the pattern as substituting a calculation about financial gain for a judgment about medical necessity, for patients recovering from falls and strokes.",
+  "caveat": "This is a population reconstruction, not a set of real claimants. The 22.7% denial rate is the published figure; the mix of eligible and ineligible cases behind it is not public and is chosen here to test precision as well as recall. Aegis must uphold the correct denial and flag the unsupported approval, or the flag rate means nothing.",
+  "governing_rules": [
+    {
+      "rule_id": "medical_necessity",
+      "citation": "42 U.S.C. 1395y(a)(1)(A)",
+      "requirement": "Reasonable and necessary for the diagnosis or treatment of illness or injury."
+    },
+    {
+      "rule_id": "skilled_care_required",
+      "citation": "42 CFR 409.31(b)(1)",
+      "requirement": "Skilled nursing or skilled rehabilitation services required on a daily basis."
+    },
+    {
+      "rule_id": "benefit_days_available",
+      "citation": "42 CFR 409.61(b); 42 U.S.C. 1395d(a)(2)(A)",
+      "requirement": "Up to 100 days of post-hospital SNF care per benefit period."
+    },
+    {
+      "rule_id": "parity_with_traditional_medicare",
+      "citation": "42 CFR 422.101(b)",
+      "requirement": "A Medicare Advantage organisation must provide coverage no less than what Traditional Medicare covers. Backdrop rule, not a solver constraint."
+    }
+  ],
+  "sources": [
+    {
+      "title": "Refusal of Recovery: How Medicare Advantage Insurers Have Denied Patients Access to Post-Acute Care (Majority Staff Report)",
+      "publisher": "U.S. Senate Permanent Subcommittee on Investigations",
+      "date": "2024-10-17",
+      "url": "https://www.blumenthal.senate.gov/newsroom/press/release/senate-permanent-subcommittee-on-investigations-releases-majority-staff-report-exposing-medicare-advantage-insurers-refusal-of-care-for-vulnerable-seniors"
+    },
+    {
+      "title": "Senate report scrutinizes Medicare Advantage prior authorization denials for post-acute care services",
+      "publisher": "American Hospital Association",
+      "date": "2024-10-17",
+      "url": "https://www.aha.org/news/headline/2024-10-17-senate-report-scrutinizes-medicare-advantage-prior-authorization-denials-post-acute-care-services"
+    },
+    {
+      "title": "Senate Subcommittee Report Details Medicare Advantage Coverage Denials",
+      "publisher": "Center for Medicare Advocacy",
+      "date": "2024-10-24",
+      "url": "https://medicareadvocacy.org/medicare-advantage-coverage-denials/"
+    }
+  ],
+  "cohort": {
+    "basis": "22 post-acute prior authorization decisions; 5 denied, a 22.7% denial rate matching UnitedHealthcare's 2022 figure in the PSI report.",
+    "profiles": [
+      {
+        "count": 16,
+        "label": "Approved, requirements met",
+        "expected_status": "upheld",
+        "requested_service": "Post-acute skilled nursing facility care following hospital discharge",
+        "original_decision": "approved",
+        "facts": {
+          "medically_necessary": true,
+          "skilled_care_required": true,
+          "benefit_days_used": 12,
+          "requested_days": 20
+        },
+        "note": "The ordinary case. Aegis must not flag it."
+      },
+      {
+        "count": 1,
+        "label": "Approved past the benefit period",
+        "expected_status": "flagged",
+        "requested_service": "Post-acute skilled nursing facility care extending beyond the 100-day benefit period",
+        "original_decision": "approved",
+        "facts": {
+          "medically_necessary": true,
+          "skilled_care_required": true,
+          "benefit_days_used": 98,
+          "requested_days": 14
+        },
+        "note": "Oversight cuts both ways: an approval the rules do not support is also a finding."
+      },
+      {
+        "count": 4,
+        "label": "Denied, requirements met",
+        "expected_status": "flagged",
+        "requested_service": "Post-acute skilled nursing facility care following hospital discharge",
+        "original_decision": "denied",
+        "facts": {
+          "medically_necessary": true,
+          "skilled_care_required": true,
+          "benefit_days_used": 17,
+          "requested_days": 25
+        },
+        "note": "The Lokken pattern at population scale."
+      },
+      {
+        "count": 1,
+        "label": "Denied, benefit period exhausted",
+        "expected_status": "upheld",
+        "requested_service": "Post-acute skilled nursing facility care after 100 covered days",
+        "original_decision": "denied",
+        "facts": {
+          "medically_necessary": true,
+          "skilled_care_required": true,
+          "benefit_days_used": 100,
+          "requested_days": 10
+        },
+        "note": "A correct denial. Aegis must uphold it."
+      }
+    ]
+  }
+}

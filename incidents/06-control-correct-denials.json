@@ -1,0 +1,78 @@
+{
+  "id": "control-correct-denials",
+  "title": "Control: denials the rules do support",
+  "system": "Control set",
+  "operator": "Aegis",
+  "period": "n/a",
+  "policy_id": "CMS-SNF-100",
+  "reconstructed": true,
+  "summary": "A system that flags every denial is not an oversight layer, it is a rubber stamp pointed the other way. These cases are constructed so that the governing constraints genuinely fail, which means the denial is correct and Aegis must uphold it. If any of them flags, the flag rate on the real incidents means nothing.",
+  "harm": "None. That is the point.",
+  "caveat": "Entirely constructed. No incident, no citation to a specific decision - only the same regulations applied to facts that do not meet them.",
+  "governing_rules": [
+    {
+      "rule_id": "medical_necessity",
+      "citation": "42 U.S.C. 1395y(a)(1)(A)",
+      "requirement": "Reasonable and necessary for the diagnosis or treatment of illness or injury."
+    },
+    {
+      "rule_id": "skilled_care_required",
+      "citation": "42 CFR 409.31(b)(1)",
+      "requirement": "Skilled nursing or skilled rehabilitation services required on a daily basis. Custodial care does not qualify."
+    },
+    {
+      "rule_id": "benefit_days_available",
+      "citation": "42 CFR 409.61(b); 42 U.S.C. 1395d(a)(2)(A)",
+      "requirement": "Up to 100 days of post-hospital SNF care per benefit period."
+    }
+  ],
+  "sources": [
+    {
+      "title": "42 CFR 409.31 - Level of care requirement",
+      "publisher": "Legal Information Institute, Cornell Law School",
+      "date": "2024-01-01",
+      "url": "https://www.law.cornell.edu/cfr/text/42/409.31"
+    }
+  ],
+  "decisions": [
+    {
+      "label": "Benefit period exhausted",
+      "expected_status": "upheld",
+      "requested_service": "Continued skilled nursing facility care after 100 covered days in the benefit period",
+      "original_decision": "denied",
+      "facts": {
+        "medically_necessary": true,
+        "skilled_care_required": true,
+        "benefit_days_used": 100,
+        "requested_days": 14
+      },
+      "note": "Care is still needed, and the statute still runs out. Aegis is not a hardship fund."
+    },
+    {
+      "label": "Custodial care, no skilled requirement",
+      "expected_status": "upheld",
+      "requested_service": "Assistance with bathing and dressing in a residential setting, no skilled nursing or therapy component",
+      "original_decision": "denied",
+      "facts": {
+        "medically_necessary": true,
+        "skilled_care_required": false,
+        "benefit_days_used": 6,
+        "requested_days": 30
+      },
+      "note": "Necessary care that this benefit does not cover."
+    },
+    {
+      "label": "Necessity not documented",
+      "expected_status": "upheld",
+      "requested_service": "Extended skilled nursing facility stay with no physician order and no documented clinical need",
+      "original_decision": "denied",
+      "facts": {
+        "medically_necessary": false,
+        "skilled_care_required": true,
+        "benefit_days_used": 10,
+        "requested_days": 20
+      },
+      "note": "The record does not establish necessity."
+    }
+  ]
+}

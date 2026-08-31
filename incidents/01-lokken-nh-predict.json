@@ -1,0 +1,69 @@
+{
+  "id": "lokken-nh-predict",
+  "title": "nH Predict cut off a 91-year-old's therapy at day 19 of a 100-day benefit",
+  "system": "nH Predict (NaviHealth)",
+  "operator": "UnitedHealth Group",
+  "period": "May 2022 - July 2023",
+  "policy_id": "CMS-SNF-100",
+  "reconstructed": false,
+  "summary": "Gene Lokken, 91, fractured his leg and ankle in May 2022 and spent a month in a nursing home before his physician approved physical therapy. UnitedHealth and its NaviHealth subsidiary paid for 19 days of that therapy and then stopped, on the ground that he was safe to go home. The complaint alleges the stop was driven by nH Predict, an algorithm that projects a length of stay, and that roughly 90% of its denials were reversed when families appealed - a rate the company is alleged to have tolerated because only about 0.2% of patients appeal at all.",
+  "harm": "The family paid roughly $150,000 out of pocket over the following year to keep him in skilled care. He died in July 2023.",
+  "caveat": "The number of additional therapy days the physician ordered after day 19 is not stated in the public record. The value below is a reconstruction; the runner sweeps the entire admissible range to show the finding does not depend on it. Everything else - the 19 days covered, the ages, the dates, the amounts - comes from the filed complaint as reported.",
+  "governing_rules": [
+    {
+      "rule_id": "medical_necessity",
+      "citation": "42 U.S.C. 1395y(a)(1)(A)",
+      "requirement": "No payment may be made for items or services that are not reasonable and necessary for the diagnosis or treatment of illness or injury. The physician had ordered the therapy."
+    },
+    {
+      "rule_id": "skilled_care_required",
+      "citation": "42 CFR 409.31(b)(1)",
+      "requirement": "Post-hospital SNF care is covered where the beneficiary requires skilled nursing or skilled rehabilitation services on a daily basis."
+    },
+    {
+      "rule_id": "benefit_days_available",
+      "citation": "42 CFR 409.61(b); 42 U.S.C. 1395d(a)(2)(A)",
+      "requirement": "Medicare covers up to 100 days of post-hospital SNF care in a benefit period. Nineteen were used."
+    },
+    {
+      "rule_id": "individualized_reassessment",
+      "citation": "42 CFR 422.101(c); CMS FAQ of 6 February 2024",
+      "requirement": "A predicted length of stay cannot by itself terminate post-acute care. Termination requires re-assessing the individual patient's condition before the notice issues. This is the backdrop rule, not a solver constraint."
+    }
+  ],
+  "sources": [
+    {
+      "title": "UnitedHealth faces class action lawsuit over algorithmic care denials in Medicare Advantage plans",
+      "publisher": "STAT News",
+      "date": "2023-11-14",
+      "url": "https://www.statnews.com/2023/11/14/unitedhealth-class-action-lawsuit-algorithm-medicare-advantage/"
+    },
+    {
+      "title": "Estate of Gene B. Lokken, et al. v. UnitedHealth Group, Inc. - AI Risks in Medical Insurance Coverage Disputes",
+      "publisher": "Tressler LLP",
+      "date": "2025-02-13",
+      "url": "https://www.tresslerllp.com/thought-leadership/estate-of-gene-b-lokken-et-al-v-unitedhealth-group-inc-ai-risks-in-medical-insurance-coverage-disputes/"
+    },
+    {
+      "title": "CMS clarifies Medicare Advantage organizations' use of AI and algorithms in coverage decisions",
+      "publisher": "Norton Rose Fulbright",
+      "date": "2024-02-16",
+      "url": "https://www.nortonrosefulbright.com/en/knowledge/publications/644bd9a2/cms-clarifies-medicare-advantage-organizations-use-of-ai-and-algorithms-in-coverage-decisions"
+    }
+  ],
+  "decisions": [
+    {
+      "label": "Lokken - therapy terminated at day 19",
+      "expected_status": "flagged",
+      "requested_service": "Continued daily skilled physical therapy in a skilled nursing facility following fracture of the leg and ankle",
+      "original_decision": "denied",
+      "facts": {
+        "medically_necessary": true,
+        "skilled_care_required": true,
+        "benefit_days_used": 19,
+        "requested_days": 30
+      },
+      "note": "Physician had approved and ordered the therapy; 81 of the 100 covered days remained."
+    }
+  ]
+}
