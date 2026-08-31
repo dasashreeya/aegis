@@ -25,12 +25,29 @@ dev = [
   "pytest-cov>=6,<7",
   "ruff>=0.9,<1",
 ]
+# The fleet runtime. Without it the seven steps still run in process, which is
+# what CI exercises, so nothing here is required for the tests to pass.
+agents = [
+  "google-adk>=2.8,<3",
+  "google-genai>=2.20,<3",
+]
+telemetry = [
+  "opentelemetry-sdk>=1.30,<2",
+  "opentelemetry-instrumentation-fastapi>=0.50b0",
+  "opentelemetry-exporter-gcp-trace>=1.9,<2",
+]
+armor = [
+  "google-cloud-modelarmor>=0.7,<1",
+]
 
 [tool.hatch.build.targets.wheel]
 packages = ["app"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = [
+  "live: hits real Vertex AI and costs money; skipped unless run with -m live",
+]
 
 [tool.ruff]
 line-length = 100

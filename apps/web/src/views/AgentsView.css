@@ -1,1 +1,85 @@
 /* Track B — styles for the agent fleet registry. */
+
+.fleet-facts {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-bottom: 1px solid #e2e6eb;
+  background: #f8f9fb;
+}
+
+.fleet-facts > div {
+  padding: 14px 20px;
+  border-right: 1px solid #e5e9ee;
+}
+
+.fleet-facts > div:last-child { border-right: 0; }
+
+.fleet-facts dt {
+  color: #798496;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.fleet-facts dd {
+  margin: 5px 0 0;
+  color: #20283a;
+  font: 12px "IBM Plex Mono", monospace;
+}
+
+.agent-item { align-items: start; }
+.agent-item--degraded .agent-item__icon { color: #8b6a13; background: #fdf3dc; }
+
+.agent-item__runtime {
+  margin-top: 8px !important;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.agent-item__runtime code {
+  padding: 3px 6px;
+  color: #40516d;
+  background: #eef2f7;
+  border: 1px solid #dde4ec;
+  border-radius: 4px;
+  font: 10px "IBM Plex Mono", monospace;
+}
+
+.agent-item__runtime span { color: #9aa3b0; font-size: 10px; }
+
+.agent-item__detail {
+  margin-top: 7px !important;
+  color: #7a8698 !important;
+  font-size: 10px !important;
+  line-height: 1.45;
+}
+
+.agent-item__capabilities {
+  margin: 9px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.agent-item__capabilities li {
+  padding: 3px 6px;
+  color: #4a5a72;
+  background: #f2f5f9;
+  border-radius: 4px;
+  font: 9px "IBM Plex Mono", monospace;
+}
+
+.agent-item__online { margin-top: 6px; }
+.agent-item__online--degraded { background: #d9a417; }
+.agent-item__online--offline { background: #b7414a; }
+
+@media (max-width: 760px) {
+  .fleet-facts { grid-template-columns: repeat(2, 1fr); }
+  .fleet-facts > div:nth-child(2n) { border-right: 0; }
+}

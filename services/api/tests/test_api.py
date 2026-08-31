@@ -35,7 +35,17 @@ def test_flags_denial_that_conflicts_with_rules() -> None:
     assert "medical_necessity" in result["unsat_core"]
     assert "skilled_care_required" in result["unsat_core"]
     assert "benefit_days_available" in result["unsat_core"]
-    assert len(result["events"]) == 4
+    # The fleet emits one event per hop. Pinning the sequence rather than the
+    # count keeps this a regression guard on the pipeline, not on its length.
+    assert [event["kind"] for event in result["events"]] == [
+        "decision.received",
+        "shield.input",
+        "rules.loaded",
+        "solver.completed",
+        "adjudication.completed",
+        "shield.output",
+        "verdict.sealed",
+    ]
 
 
 def test_replay_forks_the_event_log() -> None:

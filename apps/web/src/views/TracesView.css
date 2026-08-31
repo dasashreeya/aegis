@@ -1,1 +1,88 @@
-/* Track B — styles for execution traces. */
+/* Track B — styles for execution traces and the hash-chained ledger. */
+
+.trace-controls { display: flex; align-items: center; gap: 10px; }
+
+.trace-controls select {
+  height: 34px;
+  padding: 0 8px;
+  color: #2a3547;
+  background: #fff;
+  border: 1px solid #d8dee7;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.trace-controls select:focus {
+  outline: 0;
+  border-color: #6685ad;
+  box-shadow: 0 0 0 3px rgba(48, 94, 145, .1);
+}
+
+.chain-banner {
+  padding: 12px 20px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  color: #176247;
+  background: #edf8f3;
+  border-bottom: 1px solid #b8ddcf;
+}
+
+.chain-banner strong { font-size: 12px; }
+.chain-banner p { margin: 3px 0 0; color: #48685d; font-size: 11px; }
+.chain-banner code { font: 10px "IBM Plex Mono", monospace; }
+.chain-banner--broken { color: #8c342e; background: #fff4f2; border-bottom-color: #f0cfca; }
+.chain-banner--broken p { color: #76504d; }
+
+.trace-table .registry-row {
+  grid-template-columns: 0.9fr 2.2fr 1.2fr 0.9fr 0.9fr 0.6fr;
+  align-items: start;
+}
+
+.trace-table .registry-row strong { display: flex; align-items: center; gap: 6px; }
+.trace-table .registry-row small { display: block; margin-top: 3px; color: #8993a3; font-size: 10px; }
+.trace-table .registry-row--blocked { background: #fff6f5; }
+.trace-table .registry-row--blocked strong { color: #a23932; }
+
+.trace-kind {
+  padding: 2px 6px;
+  color: #40516d;
+  background: #eef2f7;
+  border: 1px solid #dde4ec;
+  border-radius: 4px;
+  font: 10px "IBM Plex Mono", monospace;
+}
+
+.span-table { border-top: 1px solid #e2e6eb; }
+.span-table .registry-view__header { border-bottom: 1px solid #e2e6eb; }
+
+.span-row {
+  min-height: 40px;
+  padding: 8px 20px;
+  display: grid;
+  grid-template-columns: 1.4fr 3fr 0.7fr 0.9fr;
+  align-items: center;
+  gap: 14px;
+  border-bottom: 1px solid #edf0f3;
+  color: #667286;
+  font-size: 11px;
+}
+
+.span-row code { color: #40516d; font: 10px "IBM Plex Mono", monospace; }
+
+.span-bar { height: 6px; background: #eef1f5; border-radius: 999px; overflow: hidden; }
+.span-bar > span { display: block; height: 100%; min-width: 2px; background: #36c28e; }
+
+@media (max-width: 1100px) {
+  .trace-table .registry-row { grid-template-columns: 1fr 2fr 1fr; }
+  .trace-table .registry-row > :nth-child(n + 4) { display: none; }
+  .span-row { grid-template-columns: 1.4fr 2fr 0.8fr; }
+  .span-row > :nth-child(4) { display: none; }
+}
+
+@media (max-width: 760px) {
+  .registry-view__header { align-items: flex-start; flex-direction: column; }
+  .trace-controls { width: 100%; flex-wrap: wrap; }
+  .trace-table .registry-row { grid-template-columns: 1fr 1.6fr; }
+  .trace-table .registry-row > :nth-child(n + 3) { display: none; }
+}

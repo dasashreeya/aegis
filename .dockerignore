@@ -1,6 +1,7 @@
 .git
 .github
 .venv
+.env
 node_modules
 apps/web/node_modules
 apps/web/dist
@@ -9,4 +10,5 @@ services/api/.ruff_cache
 **/__pycache__
 *.log
 *.tfstate*
-
+*.json.key
+infra/.terraform
