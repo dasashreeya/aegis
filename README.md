@@ -2,6 +2,8 @@
 
 **Live:** https://aegis-708478134642.us-central1.run.app — deployed on Cloud Run with Firestore state, hosted Model Armor and the ADK fleet in `live` mode.
 
+> **The deployed revision is behind `main`.** It was built from `85fecd7`, which predates the Z3 concurrency fix in `c6a4d20`. The service takes 40 concurrent requests per container, and two overlapping decisions are enough to fault inside z3's native library — so production still needs a redeploy. Details in [What is not done](#what-is-not-done).
+
 **One-sentence pitch:** Aegis is a Fortified Enterprise Fleet of governed AI agents that sits alongside any automated eligibility/claims/benefits engine, independently re-adjudicates each decision against the real governing rules, and blocks or flags decisions that a formal solver proves are contradictory or unsupported — with a hash-chained audit trail that can be replayed and forked.
 
 **Cold-open (demo second 0–20):** "Over two months in 2022, Cigna doctors denied more than 300,000 requests for payment using its PxDx system, spending an average of 1.2 seconds on each — without opening the file. UnitedHealth's nH Predict cut off post-acute care for elderly patients and was reversed about 90% of the time on appeal, because only 0.2% of patients appeal at all. Ninety-one-year-old Gene Lokken lost his coverage after 19 days of a 100-day benefit and his family paid $150,000. Here is what our system would have done." Then show Aegis intercepting that exact denial — see [Recreating the incidents](#recreating-the-incidents), which is not a claim, it is a test that runs in CI.
@@ -201,6 +203,7 @@ python scripts/incidents.py --live -c 8   # replay all six recorded incidents
 
 Honesty about the gap is the point of the project, so:
 
+- **Production is a revision behind, and it is the revision with the crash.** The live service was built from `85fecd7`; the Z3 serialisation landed in `c6a4d20`. Until someone with `gcloud` rebuilds and deploys, concurrent traffic to the public URL can still take a container down. Neither `gcloud`, `terraform` nor `docker` is installed on the machine this was built on, so the redeploy is not something this branch could do for itself.
 - **Memory Bank, Agent Identity and Agent Gateway are not integrated.** `/api/v1/fleet` is an in-application registry, not the Google Agent Registry product.
 - **`cached` mode is declared but not implemented** — it currently behaves as `live`.
 - **The corpus is one policy domain.** All six incidents are Medicare post-acute coverage, because that is the domain `CMS-SNF-100` encodes. Robodebt, Michigan's MiDAS and the Dutch childcare benefits scandal are the obvious next cases and none of them fit this fact schema; adding them means widening `DecisionFacts`, which is a change to the frozen contract and therefore its own PR.
@@ -225,6 +228,31 @@ Track B consumes the rules track only through the `Solver` protocol in [`contrac
 6. (3:50–4:00) Close: "If Aegis had been running, this would have been caught."
 
 **Strongest judge objection & preemption:** "Is the Z3/formal layer real or theater?" → Show the unsat core live and the governance rule that keeps the model out of the verdict. Second: "Could this scale to real production data?" → Show the registry, the dead-letter policy and the hash chain; frame synthetic data as a deliberate compliance decision.
+
+---
+
+## Sources
+
+Every number quoted above traces to one of these. The per-incident files in
+[`incidents/`](incidents/) carry the same citations machine-readably, and a test
+rejects any incident file that lacks them.
+
+**The incidents**
+
+- Bannow, Tara. ["UnitedHealth faces class action lawsuit over algorithmic care denials in Medicare Advantage plans."](https://www.statnews.com/2023/11/14/unitedhealth-class-action-lawsuit-algorithm-medicare-advantage/) *STAT News*, 14 November 2023. — Gene Lokken, 91, fractured leg and ankle May 2022, 19 days of therapy covered then cut off, ~$150,000 paid out of pocket, died July 2023. Dale Tetzloff, 74, stroke October 2022, cut off after 20 days, $70,000 paid, died October 2023. Alleged 90% error rate measured by reversal on appeal; 0.2% of patients appeal.
+- ["Estate of Gene B. Lokken, et al. v. UnitedHealth Group, Inc. — AI Risks in Medical Insurance Coverage Disputes."](https://www.tresslerllp.com/thought-leadership/estate-of-gene-b-lokken-et-al-v-unitedhealth-group-inc-ai-risks-in-medical-insurance-coverage-disputes/) *Tressler LLP*, 2025. — Filed in the U.S. District Court for the District of Minnesota, 14 November 2023; key claims allowed to proceed 13 February 2025.
+- Rucker, Patrick (The Capitol Forum), Maya Miller and David Armstrong. ["How Cigna Saves Millions by Having Its Doctors Reject Claims Without Reading Them."](https://www.propublica.org/article/cigna-pxdx-medical-health-insurance-rejection-claims) *ProPublica*, 25 March 2023. — "Over a period of two months last year, Cigna doctors denied over 300,000 requests for payments using this method, spending an average of 1.2 seconds on each case." A former Cigna doctor: "We literally click and submit. It takes all of 10 seconds to do 50 at a time."
+- ["Cigna hits back on claims review report from ProPublica."](https://www.beckerspayer.com/payer/cigna-hits-back-on-claims-review-report-from-propublica/) *Becker's Payer Issues*, March 2023. — Cigna's response; included because a corpus that cites only one side of a disputed report is not evidence.
+- ["Refusal of Recovery: How Medicare Advantage Insurers Have Denied Patients Access to Post-Acute Care"](https://www.blumenthal.senate.gov/newsroom/press/release/senate-permanent-subcommittee-on-investigations-releases-majority-staff-report-exposing-medicare-advantage-insurers-refusal-of-care-for-vulnerable-seniors) (Majority Staff Report). *U.S. Senate Permanent Subcommittee on Investigations*, 17 October 2024. — UnitedHealthcare's post-acute prior-authorisation denial rate rose 10.9% (2020) → 16.3% (2021) → **22.7% (2022)**, from more than 280,000 pages of company documents. Also [AHA's summary](https://www.aha.org/news/headline/2024-10-17-senate-report-scrutinizes-medicare-advantage-prior-authorization-denials-post-acute-care-services) and the [Center for Medicare Advocacy's](https://medicareadvocacy.org/medicare-advantage-coverage-denials/).
+
+**The rules the solver enforces**
+
+- [42 U.S.C. §1395y(a)(1)(A)](https://www.law.cornell.edu/uscode/text/42/1395y) — reasonable and necessary. Backs `medical_necessity`.
+- [42 CFR §409.31](https://www.law.cornell.edu/cfr/text/42/409.31) — level of care; skilled services required on a daily basis. Backs `skilled_care_required`.
+- [42 CFR §409.61](https://www.law.cornell.edu/cfr/text/42/409.61); 42 U.S.C. §1395d(a)(2)(A) — 100 days per benefit period. Backs `benefit_days_available`.
+- [42 CFR §409.32](https://www.law.cornell.edu/cfr/text/42/409.32) — "The restoration potential of a patient is not the deciding factor in determining whether skilled services are needed." The Jimmo rule, in the regulation itself.
+- [*Jimmo v. Sebelius* settlement fact sheet](https://www.cms.gov/medicare/medicare-fee-for-service-payment/snfpps/downloads/jimmo_fact_sheet2_022014_final.pdf), CMS — no improvement standard; approved by the District of Vermont, 24 January 2013. Background from the [Center for Medicare Advocacy](https://medicareadvocacy.org/jimmo-v-sebelius-improvement-standard-case-summary/).
+- [CMS FAQ of 6 February 2024 on Medicare Advantage and AI](https://www.nortonrosefulbright.com/en/knowledge/publications/644bd9a2/cms-clarifies-medicare-advantage-organizations-use-of-ai-and-algorithms-in-coverage-decisions) — a predicted length of stay "cannot be used as the basis to terminate post-acute care services"; §422.101(c) requires re-assessing the individual patient first.
 
 ---
 

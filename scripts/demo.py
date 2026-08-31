@@ -16,7 +16,6 @@ from __future__ import annotations
 import argparse
 
 import _bootstrap  # noqa: F401  puts services/api on the path; must precede app imports
-
 from app.agents.replay import ForkRequest
 from app.config import Settings, get_settings
 from app.dependencies import build_stores

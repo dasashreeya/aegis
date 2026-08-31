@@ -21,7 +21,6 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 import _bootstrap  # noqa: F401  puts services/api on the path; must precede app imports
-
 from app.config import Settings, get_settings
 from app.corpus import Incident, load_incidents
 from app.dependencies import build_stores
