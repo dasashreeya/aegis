@@ -250,6 +250,23 @@ resource "google_cloud_run_v2_service_iam_member" "public" {
   member   = "allUsers"
 }
 
+# Dead-lettering is not self-service: Pub/Sub moves a message with its own
+# service agent, which needs publish on the dead-letter topic and subscribe on
+# the subscription. Without both, max_delivery_attempts is silently ignored and
+# a failing message redelivers forever instead of parking.
+resource "google_pubsub_topic_iam_member" "dead_letter_publisher" {
+  topic      = google_pubsub_topic.decisions_dead_letter.name
+  role       = "roles/pubsub.publisher"
+  member     = "serviceAccount:service-${data.google_project.current.number}@gcp-sa-pubsub.iam.gserviceaccount.com"
+  depends_on = [google_project_service.services]
+}
+
+resource "google_pubsub_subscription_iam_member" "dead_letter_subscriber" {
+  subscription = google_pubsub_subscription.decisions.name
+  role         = "roles/pubsub.subscriber"
+  member       = "serviceAccount:service-${data.google_project.current.number}@gcp-sa-pubsub.iam.gserviceaccount.com"
+}
+
 resource "google_pubsub_subscription" "decisions" {
   name  = "aegis-decisions-push"
   topic = google_pubsub_topic.decisions.id
