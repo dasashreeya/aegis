@@ -84,6 +84,13 @@ resource "google_model_armor_template" "aegis" {
   location    = var.region
   template_id = "aegis-shield"
 
+  # Required by the Model Armor API on update; all fields are optional but the
+  # block itself is not. Logging is on so shield operations show in the console.
+  template_metadata {
+    log_sanitize_operations = true
+    log_template_operations = true
+  }
+
   filter_config {
     rai_settings {
       rai_filters {
@@ -196,6 +203,10 @@ resource "google_cloud_run_v2_service" "aegis" {
 
       resources {
         limits = { cpu = "2", memory = "2Gi" }
+        # BatchSpanProcessor exports on a background thread. With CPU throttled
+        # between requests that thread never runs and spans never reach Cloud
+        # Trace. Instances still scale to zero, so this costs nothing at idle.
+        cpu_idle = false
         # The ADK fleet and Z3 both benefit; the first request otherwise pays
         # for the whole import graph.
         startup_cpu_boost = true
